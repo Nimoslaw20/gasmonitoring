@@ -1,0 +1,52 @@
+<div style="height:20px">
+
+</div>
+<section style="padding:50px auto; margin:100px">
+    <div class="container">
+        <div id="app">
+            <div v-if="tableData.length > 0">
+
+                <el-table :data="tableData" style="width: 100%" :default-sort="{prop: 'time_stamp', order: 'descending'}">
+                    <el-table-column type="index" width="50">
+                    </el-table-column>
+                    <el-table-column prop="time_stamp" label="Date" width="180">
+                    </el-table-column>
+                    <el-table-column prop="concentration" label="Concentration">
+                    </el-table-column>
+                    <el-table-column prop="temperature" label="Temperature">
+                    </el-table-column>
+                    <el-table-column prop="humidity" label="Humidity">
+                    </el-table-column>
+                </el-table>
+            </div>
+        </div>
+    </div>
+</section>
+
+<script>
+    ELEMENT.locale(ELEMENT.lang.en)
+    var app2 = new Vue({
+        el: '#app',
+        data: {
+            message: 'You loaded this page on ' + new Date().toLocaleString(),
+            tableData: []
+        },
+        beforeMount() {
+            this.getTable();
+        },
+        methods: {
+            getTable() {
+                fetch('/tabledata')
+                    .then(response => { return response.json() })
+                    .then(responseData => {
+                        this.tableData = responseData.logs
+                    })
+            }
+        }
+    })
+</script>
+<style>
+    #app {
+        height: 100%;
+    }
+</style>
