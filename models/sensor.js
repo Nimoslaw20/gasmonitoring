@@ -5,9 +5,11 @@ const Schema = mongoose.Schema;
 //organizing the structure of the database using Schema
 let Sensor = new Schema({
   ser_no: String,
+
   last_online: {
     type: Date
   },
+
   logs: [ 
     {
       humidity: Number,
@@ -16,6 +18,7 @@ let Sensor = new Schema({
       time_stamp: Date
     }
   ]
+  
 });
 
 module.exports = mongoose.model('Sensor', Sensor);

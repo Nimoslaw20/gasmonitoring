@@ -1,54 +1,58 @@
 var express = require('express');
 var router = express.Router();
-let i = 20000;
+//let i = 20000;
+
+
 const moment = require('moment');
-const {
-  connect
-} = require('mqtt');
-const {
-  mqtt
-} = require('../config/env');
-const client = connect(
-  mqtt.url,
-  mqtt.options
-);
+const {connect} = require('mqtt');
+const {mqtt} = require('../config/env');
+const client = connect(mqtt.url,mqtt.options); // connect to MQTT 
 const async = require('async');
 const Sensor = require('../models/sensor');
 const debug = require('debug')('lpg:index.js');
+
+
+
+//once connected, subscribe on the MQTT broker 
 client.once('connect', () => {
   debug('MQTT client connected.');
   client.subscribe('#', (err, granted) => {
     if (err) return debug(err);
-    debug(`Connected to ${granted[0].topic}`);
+    debug(`Connected to ${granted[0].topic}`);  //if granted, send response object
   });
 });
+
+
 
 /* GET home page. */
 router.get('/', function (req, res, next) {
   Sensor.findOne({}, {
     logs: {
-      $slice: -1
+      $slice: -1           //reverse the order of the data 
     }
-  }, function (err, result) {
+  }, 
+  
+  function (err, result) {   //unsuccessful render the error page
     if (err) return res.status(500).render('error', {
       error: err
     })
     console.log(result)
-    res.render('index', {
+    res.render('index', {      //successful, render the homepage
       title: 'LPG Mon HOME',
-      result: result.logs[0]
+      result: result.logs[0]     //return last log on the cards of the homepage
     });
   });
 
 });
-router.get('/ping', function (req, res, next) {
-  res.send('PONG');
-});
 
+
+
+
+//Render the graph of gas concentration and time
 router.get('/chartdata', (req, res) => {
   Sensor.findOne({}, {
     logs: {
-      $slice: -10
+      $slice: -10    //return the last ten objects 
     }
   }).exec((err, logs) => {
     if (err) return res.send(err);
@@ -66,7 +70,7 @@ router.get('/chartdata', (req, res) => {
       logs.logs,
       (value, key, callback) => {
         try {
-          chart.data[key] = {
+          chart.data[key] = {    //defining the x and y axis
             label: moment(value.time_stamp).fromNow('m'),
             value: value.concentration
           };
@@ -83,23 +87,34 @@ router.get('/chartdata', (req, res) => {
     // res.json(logs);
   });
 });
+
+
+
+//making request to the client-database on homepage
 router.get('/logs', function (req, res, next) {
   res.render('table', {
     title: 'Raw Data'
   });
 });
+
+
+//the client-database page make a request to get the log data
 router.get('/tabledata', function (req, res) {
   Sensor.findOne({}, {
-    logs: 1
+    logs: 1   //return only logs
   }).exec((err, result) => {
     if (err) return debug(err);
     res.json(result);
   });
 });
+
+
+//when sensor data arrives
 router.get('/update', (req, res, next) => {
   let query = req.query;
   query.time_stamp = new Date();
 
+  //publish to channel or serial no
   client.publish(req.query.channel, JSON.stringify(query), err => {
     if (err) {
       debug(err);
@@ -124,6 +139,11 @@ router.get('/update', (req, res, next) => {
   });
 });
 
+
+
+
+
+//
 router.get('/stream', (req, res) => {
   req.socket.setTimeout(Number.MAX_SAFE_INTEGER);
   // req.socket.setTimeout((i *= 6));
@@ -146,7 +166,7 @@ router.get('/stream', (req, res) => {
   });
 
   req.on('close', () => {
-    clearTimeout(timer);
+    clearTimeout(timer);  //destroy the timer interval 18000 when the connection closes.
   });
 });
 
