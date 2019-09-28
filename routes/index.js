@@ -36,12 +36,15 @@ router.get('/', function (req, res, next) {
     if (err) return res.status(500).render('error', {
       error: err
     })
-    console.log(result)
-    if(!result.logs) result.logs = []
-    res.render('index', {      //successful, render the homepage
+    // console.log(result)
+    if(result) return res.render('index', {      //successful, render the homepage
       title: 'LPG Mon HOME',
       result: result.logs[0]     //return last log on the cards of the homepage
     });
+    res.render('index',{
+      title: 'LPG Mon HOME',
+      result: []
+    })
   });
 
 });
