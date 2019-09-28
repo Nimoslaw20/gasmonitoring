@@ -70,7 +70,7 @@ router.get('/chartdata', (req, res) => {
       },
       data: []
     };
-    async.forEachOf(
+    if (logs) return async.forEachOf(
       logs.logs,
       (value, key, callback) => {
         try {
@@ -88,7 +88,7 @@ router.get('/chartdata', (req, res) => {
         res.json(chart);
       }
     );
-    // res.json(logs);
+    res.json(chart);
   });
 });
 
