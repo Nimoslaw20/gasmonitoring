@@ -1,5 +1,5 @@
 window.onload = () => {
-  var evtSource = new EventSource('/stream');
+  var evtSource = new EventSource('/stream'); //wait for event from the server by making a connection the stream entry point
   evtSource.onmessage = e => {
     let data = JSON.parse(e.data);
     document.getElementById('gas-conc').innerText = data.conc;
@@ -19,7 +19,7 @@ FusionCharts.ready(function() {
     width: '100%' /*0 - 20 + window.innerWidth / 2*/,
     height: '400',
     dataFormat: 'jsonurl',
-    dataSource: '/chartdata',
+    dataSource: '/chartdata',  
     type: 'line'
   });
   fusioncharts.render();
