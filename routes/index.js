@@ -37,6 +37,7 @@ router.get('/', function (req, res, next) {
       error: err
     })
     console.log(result)
+    if(!result.logs) result.logs = []
     res.render('index', {      //successful, render the homepage
       title: 'LPG Mon HOME',
       result: result.logs[0]     //return last log on the cards of the homepage
