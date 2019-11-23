@@ -1,24 +1,21 @@
 const mongoose = require('mongoose');
 const Schema = mongoose.Schema;
 
-
-//organizing the structure of the database using Schema
 let Sensor = new Schema({
   ser_no: String,
 
   last_online: {
-    type: Date
+    type: Date,
   },
 
-  logs: [ 
+  logs: [
     {
       humidity: Number,
       temperature: Number,
       concentration: Number,
-      time_stamp: Date
-    }
-  ]
-  
+      time_stamp: Date,
+    },
+  ],
 });
 
 module.exports = mongoose.model('Sensor', Sensor);
