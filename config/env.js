@@ -4,8 +4,12 @@ const mqtt_auth = (mqtt_url.auth || ':').split(':');
 
 module.exports = {
   database: {
-    url: process.env.MONGODB_URI
+    url: process.env.MONGODB_URI,
   },
+  secret: 'abcdef',
+
+  JWT_KEY: 'abcdef',
+
   mqtt: {
     url: mqtt_url,
     channel: process.env.MQTT_CHANNEL,
@@ -19,7 +23,7 @@ module.exports = {
       protocolId: 'MQIsdp',
       protocolVersion: 3,
       clean: true,
-      encoding: 'utf8'
-    }
-  }
+      encoding: 'utf8',
+    },
+  },
 };

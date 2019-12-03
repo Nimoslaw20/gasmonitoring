@@ -5,13 +5,17 @@ var path = require('path');
 var cookieParser = require('cookie-parser');
 var logger = require('morgan');
 var { database } = require('./config/env');
-var indexRouter = require('./routes/index');
+var bodyParser = require('body-parser');
 var mongoose = require('mongoose');
 var app = express();
-var debug = require('debug')('lpg:app.js');
+var debug = require('debug')('LPGDetection:app.js');
 mongoose.Promise = require('bluebird');
-var deviceRouter = require('./routes/devices');
-var stationRouter = require('./routes/stations');
+var deviceRouter = require('./app/routes/devices');
+var stationRouter = require('./app/routes/stations');
+var authorityUserRouter = require('./app/routes/authority-branch-user');
+var authorityBranchRouter = require('./app/routes/authority-branch');
+var stationUserRouter = require('./app/routes/station-user');
+var authorityUserLoginRouter = require('./app/routes/authority-user');
 
 //connection of server to the database
 mongoose.connect(database.url, {
@@ -30,14 +34,31 @@ mongoose.connect(database.url, {
 app.use(logger('dev'));
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
+app.use(bodyParser.urlencoded({ extended: false }));
+app.use(bodyParser.json());
 app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
 
-app.use('/api/v1', [indexRouter, deviceRouter, stationRouter]);
+app.use('/api/v1', [
+  deviceRouter,
+  stationRouter,
+  stationUserRouter,
+  authorityBranchRouter,
+  authorityUserRouter,
+  authorityUserLoginRouter,
+]);
 
 // catch 404 and forward to error handler
-app.use(function(req, res, next) {
+app.use((req, res, next) => {
   next(createError(404));
+});
+
+//Headers
+app.use((req, res, next) => {
+  res.header(
+    'Access-Control-llow-Headers',
+    'Content-Type, Accept, Authorization'
+  );
 });
 
 // error handler
