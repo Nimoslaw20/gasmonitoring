@@ -1,6 +1,6 @@
 const express = require('express');
 const router = express.Router();
-const authorityUserController = require('../controllers/authority-branch/authority-branch-user-controller');
+const authorityUserController = require('../../controllers/authority-branch/authority-branch-user-controller');
 
 router
   .route('/authority-branch/users')

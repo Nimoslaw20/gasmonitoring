@@ -1,6 +1,6 @@
 const express = require('express');
 const router = express.Router();
-const authorityBranchController = require('../controllers/authority-branch/authority-branch-controller');
+const authorityBranchController = require('../../controllers/authority-branch/authority-branch-controller');
 
 router
   .route('/authority-branches')

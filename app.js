@@ -11,11 +11,11 @@ var app = express();
 var debug = require('debug')('LPGDetection:app.js');
 mongoose.Promise = require('bluebird');
 var deviceRouter = require('./app/routes/devices');
-var stationRouter = require('./app/routes/stations');
-var authorityUserRouter = require('./app/routes/authority-branch-user');
-var authorityBranchRouter = require('./app/routes/authority-branch');
-var stationUserRouter = require('./app/routes/station-user');
-var authorityUserLoginRouter = require('./app/routes/authority-user');
+var stationRouter = require('./app/routes/stations/stations');
+var authorityUserRouter = require('./app/routes/authority-branch/authority-branch-user');
+var authorityBranchRouter = require('./app/routes/authority-branch/authority-branch');
+var stationUserRouter = require('./app/routes/stations/station-user');
+var authorityUserLoginRouter = require('./app/routes/authority/authority-user');
 
 //connection of server to the database
 mongoose.connect(database.url, {

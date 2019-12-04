@@ -6,6 +6,7 @@ colors.setTheme(colorScheme);
 
 const authorityBranchController = {
   /**
+   *
    * @apiVersion 0.0.1
    * @api {get} /authority Get authority branches
    * @apiDescription
@@ -63,7 +64,7 @@ const authorityBranchController = {
    * @apiParam (Authority branch) {String} new authority branch
    * @apiSampleRequest http://localhost:3000/api/v1/authority
    * @apiSuccessExample {json} Success-Response
-   * HTTP/1.1 201 OK
+   *    HTTP/1.1 201 OK
    * {
    *  "message": "Authority Branch created successfully.",
    *  "success": true,

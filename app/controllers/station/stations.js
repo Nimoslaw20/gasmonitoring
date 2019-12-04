@@ -5,8 +5,42 @@ colors.enable();
 colors.setTheme(colorScheme);
 
 const StationController = {
+  /**
+   *@apiVersion 0.0.1
+   * @apiGroup Station
+   * @api {GET} /station Get list of all stations
+   * @apiSampleRequest   http://localhost:3000/api/v1/station
+   * @apiParamExample {json} Request-Example:
+   *     {
+   *       "authorization": Bearer token
+   *     }
+   *  @apiSuccessExample {json} Success-Response:
+   *     HTTP/1.1 200 OK
+   *
+   *   {
+   *          "message": "Station list",
+   *           "success": true,
+   *           "data": [
+   *          {
+   *            "name": "Royal Gas Group"
+   *         },
+   *        {
+   *            "name": "Paradise Gas Group"
+   *        },
+   *        {
+   *             "name": "Swiss Gas"
+   *         },
+   *         {
+   *             "name": "Allied Gas"
+   *          }
+   *        ]
+   *       }
+   *
+   *
+   *
+   * */
   read(req, res) {
-    Station.find({}, { name: 1 })
+    Station.find({}, { name: 1, _id: 0 })
       // .populate('device', 'ser_no')
       // .populate('station_user', 'name')
       .exec(function(err, data) {
@@ -14,7 +48,7 @@ const StationController = {
         if (err) {
           console.log(`${err}`.error);
           res.status(500).json({
-            message: 'error occured',
+            message: 'error occurred',
             success: false,
             error: err.message,
           });
@@ -27,6 +61,36 @@ const StationController = {
         }
       });
   },
+
+  /**
+   * @apiVersion 0.0.1
+   * @apiGroup Station
+   * @api {POST}  /station Creating a new station
+   * @apiDescription
+   * To fully create a new station, you will need to call the endpoint with a POST method.
+   * @apiSampleRequest   http://localhost:3000/api/v1/station
+   * @apiSuccessExample {json} Success-Response:
+   *  HTTP/1.1 200 OK
+   *        {
+   *            "message": "Station created successfully.",
+   *            "success": true,
+   *            "data": {
+   *                    "device": [
+   *                          "5ddc0fc2204df33906beeb03"
+   *                            ],
+   *             "_id": "5ddc0fcd204df33906beeb04",
+   *             "name": "Fan Oil Gas Group",
+   *             "email": "fogg@outlook.com",
+   *             "location": "Asokwa",
+   *             "registration_no": "FGHJ",
+   *             "number_of_tanks": 2,
+   *             "__v": 0
+   *              }
+   *           }
+   *
+   *
+   *
+   * */
 
   create(req, res) {
     const body = new Station(req.body);
@@ -41,7 +105,7 @@ const StationController = {
           if (err) {
             console.log(`${err}`.error);
             res.status(500).json({
-              message: 'error occured',
+              message: 'error occurred',
               success: false,
               error: err.message,
             });
@@ -57,6 +121,37 @@ const StationController = {
     });
   },
 
+  /**
+   *
+   * @apiVersion 0.0.1
+   * @apiGroup Station
+   * @api {PATCH}  /station/:id
+   * @apiDescription
+   * To fully update a station field, you will need to call the endpoint with a PATCH method
+   * @apiParam {String} id Station unique ID
+   * @apiSampleRequest   http://localhost:3000/api/v1/station/5ddff97a6dd16b3782624fc4
+   * @apiSuccessExample {json} Success-Response:
+   *   HTTP/1.1 200 OK
+   *   {
+   *      "message": "Station updated successfully.",
+   *      "success": true,
+   *      "data": {
+   *            "device": [
+   *                       "5dda799aac23950c2afecab4"
+   *                    ],
+   *                "_id": "5dda827f458422106484202e",
+   *                        "name": "Royal Gas Group",
+   *                        "email": "royalgg@outlook.com",
+   *                        "location": "Adenta",
+   *                       "registration_no": "ASDF120",
+   *                       "number_of_tanks": 2,
+   *                       "__v": 0,
+   *                  "station_user": "5dda893738dc1b134ba045a5",
+   *      "owner": "Emmanuel Nimo"
+   *     }
+   *   }
+   *
+   * */
   update(req, res) {
     Station.findOne({ _id: req.params.id }).exec((err, response) => {
       if (!err && response) {
@@ -71,7 +166,7 @@ const StationController = {
           .catch(err => {
             console.log(`${err}`.error);
             res.status(500).json({
-              message: 'error occured',
+              message: 'error occurred',
               success: false,
               error: err.message,
             });
@@ -85,6 +180,38 @@ const StationController = {
       }
     });
   },
+
+  /**
+   *
+   * @apiVersion 0.0.1
+   * @apiGroup Station
+   * @api {DELETE}  station/:id  Deleting a station
+   * @apiDescription
+   * To fully delete a station , you will need to call the endpoint with a DELETE method using an id as a param.
+   * @apiParam {String} id Station unique ID
+   * @apiSuccessExample {json} Success-Response:
+   *  HTTP/1.0 200 OK
+   *        {
+   *           "message": "Station deleted successfully.",
+   *           "success": true,
+   *           "data": {
+   *                    "device": [
+   *                        "5ddc0fc2204df33906beeb03"
+   *                     ],
+   *     "_id": "5ddc0fcd204df33906beeb04",
+   *     "name": "Fan Oil Gas Group",
+   *     "email": "fogg@outlook.com",
+   *     "location": "Asokwa",
+   *     "registration_no": "FGHJ",
+   *     "number_of_tanks": 2,
+   *     "__v": 0,
+   *     "authority": "5dda9436a64f1c1818e30cf6"
+   *     }
+   *  }
+   *
+   *
+   *
+   * */
 
   delete(req, res) {
     Station.findOne({ _id: req.params.id }).exec((err, response) => {
@@ -166,7 +293,7 @@ const StationController = {
       .catch(err => {
         console.log(`${err}`.error);
         res.status(500).json({
-          message: 'error occured',
+          message: 'error occurred',
           success: false,
           error: err.message,
         });

@@ -16,6 +16,12 @@ const user = new Schema({
     type: String,
     required: true,
   },
+
+  refresh_token: {
+    type: String,
+    required: false,
+    default: null,
+  },
 });
 
-module.exports = mongoose.model('users', user);
+module.exports = mongoose.model('Users', user);

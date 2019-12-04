@@ -1,7 +1,7 @@
 const bcrypt = require('bcrypt');
 const saltRounds = 10;
 var config = require('../../../config/env');
-const user = require('../../models/authority/authority-user');
+const Users = require('../../models/authority/authority-user');
 var jsonwt = require('jsonwebtoken');
 const colors = require('colors');
 const colorScheme = require('../../../config/colors');
@@ -15,9 +15,9 @@ const authController = {
    * @apiName signup
    * @apiVersion 0.0.1
    * @apiGroup Authority user.
-   * @api {POST} /authority/user/signup signup
+   * @api {POST} /authority/user/signup For signing up an authority user.
    * @apiDescription
-   * To create a new sign up for a user you will need to call the endpoint with a post method
+   * To create a new sign up for an authority user you will need to call the endpoint with a post method
    * @apiParam (Authority user) {String} name  mandatory user name
    * @apiParam (Authority user) {String} password mandatory user password
    * @apiSampleRequest http://localhost:3000/api/v1/authority/user/signup
@@ -43,12 +43,11 @@ const authController = {
    */
 
   async signup(req, res) {
-    var newUser = new user({
+    var newUser = new Users({
       name: req.body.name,
       password: req.body.password,
     });
-    await user
-      .findOne({ name: newUser.name })
+    await Users.findOne({ name: newUser.name })
       .then(async response => {
         console.log(response);
         if (!response) {
@@ -69,7 +68,7 @@ const authController = {
                 .catch(err => {
                   console.log(`${err}`.error);
                   res.status(500).json({
-                    message: 'an error occured',
+                    message: 'an error occurred',
                     success: false,
                     error: err.message,
                   });
@@ -98,9 +97,9 @@ const authController = {
    * @apiName login
    * @apiGroup Authority user
    * @apiVersion 0.0.1
-   * @api {post} /authority/user/login login
+   * @api {post} /authority/user/login  For logging in an authority user.
    * @apiDescription
-   * To login, you will need to call the endpoint with a post method
+   * To login as an authority user, you will need to call the endpoint with a post method
    * @apiParam (Authority user) {String} name  mandatory user name
    * @apiParam (Authority user) {String} password mandatory user password
    * @apiSampleRequest http://localhost:3000/api/v1/authority/user/login
@@ -120,8 +119,7 @@ const authController = {
    *
    */
   async login(req, res) {
-    await user
-      .findOne({ name: req.body.name })
+    await Users.findOne({ name: req.body.name })
       .then(response => {
         console.log(response);
         bcrypt.compare(
@@ -138,7 +136,12 @@ const authController = {
               var token = jsonwt.sign(payload, config.secret, {
                 expiresIn: '3600s',
               });
-              var refresh_token = rand.uid(256);
+              var refresh_token = jsonwt.sign(payload, config.secret);
+              await Users.findByIdAndUpdate(response.id, {
+                $set: {
+                  refresh_token: refresh_token,
+                },
+              }).exec();
               res.status(200).json({
                 message: 'User Access Granted',
                 success: true,
@@ -147,7 +150,7 @@ const authController = {
               });
             } else {
               res.status(401).json({
-                message: 'User unauthrorized access',
+                message: 'User unauthorized access',
                 success: false,
               });
             }
@@ -163,7 +166,7 @@ const authController = {
       .catch(err => {
         console.log(err);
         res.status(500).json({
-          message: 'error occurred',
+          message: 'an error occurred',
           success: false,
           error: err.message,
         });

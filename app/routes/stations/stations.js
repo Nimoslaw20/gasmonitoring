@@ -1,7 +1,7 @@
-const stationController = require('../controllers/station/stations');
+const stationController = require('../../controllers/station/stations');
 const express = require('express');
 const router = express.Router();
-const auth = require('../../middleware/authorization');
+const auth = require('../../../middleware/authorization');
 
 router
   .route('/station')
