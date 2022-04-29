@@ -8,7 +8,7 @@
   },
   "dependencies": {
     "@hapi/joi": "^16.1.8",
-    "async": "^2.6.2",
+    "async": "^2.6.4",
     "bcrypt": "^3.0.7",
     "bluebird": "^3.5.3",
     "body-parser": "^1.19.0",
